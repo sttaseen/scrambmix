@@ -16,7 +16,13 @@ def delete_existing_annotations():
     # Delete existing annotation files
     for subset in SUBSETS:
         try:
-            os.remove(f'{subset}_annotations.txt')
+            os.remove(f'{subset}_rawframes_annotations.txt')
+        except:
+            pass
+
+    for subset in SUBSETS:
+        try:
+            os.remove(f'{subset}_videodataset_annotations.txt')
         except:
             pass
 
@@ -35,10 +41,15 @@ def write_annotations(videos):
         subset = videos[video_id]['subset']
         directory = f'rawframes/{subset}/{video_id}'
 
+        # Create RawFrames annotations
         frames = len([frame for frame in os.listdir(directory)
                      if os.path.isfile(os.path.join(directory, frame))])
-        with open(f'{subset}_annotations.txt', 'a') as fout:
+        with open(f'{subset}_rawframes_annotations.txt', 'a') as fout:
             fout.write(f'{subset}/{video_id} {frames} {class_id}\n')
+
+        # Create VideoDataset annotations
+        with open(f'{subset}_videodataset_annotations.txt', 'a') as fout:
+            fout.write(f'{subset}/{video_id}.mp4 {class_id}\n')
 
 
 if __name__ == '__main__':

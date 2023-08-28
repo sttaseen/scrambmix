@@ -45,7 +45,7 @@ def write_annotations(videos, video_annotations):
         # Create RawFrames annotations
         frames = len([frame for frame in os.listdir(directory)
                      if os.path.isfile(os.path.join(directory, frame))])
-        with open(f'{subset}_rawframes_annotations.txt', 'a') as fout:
+        with open(f'{subset}_annotations.txt', 'a') as fout:
             fout.write(f'{subset}/{video_id} {frames} {class_id}\n')
 
         if video_annotations:

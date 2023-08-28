@@ -33,25 +33,25 @@ model = dict(
     cls_head=dict(
         type='SlowFastHead',
         in_channels=2304,
-        num_classes=400,
+        num_classes=100,
         spatial_type='avg',
         dropout_ratio=0.5),
     train_cfg=None,
     test_cfg=dict(average_clips='prob'))
-checkpoint_config = dict(interval=4)
+checkpoint_config = dict(interval=10)
 
 # Setup WandB
-log_config = dict(interval=10, hooks=[
-    dict(type='TextLoggerHook'),
-    dict(type='WandbLoggerHook',
-         init_kwargs={
-             'entity': "760-p6",
-             'project': "slowfast-wlasl-100"
-             'group': "sadat"
-         },
-         log_artifact=True)
-]
-)
+log_config = dict(interval=10,
+                 hooks=[
+                        dict(type='TextLoggerHook'),
+                        dict(type='WandbLoggerHook',
+                        init_kwargs={
+                         'entity': "760-p6",
+                         'project': "slowfast-csn-wlasl100",
+                         'group': 'slowfast'
+                        },
+                        log_artifact=True)
+])
 
 dist_params = dict(backend='nccl')
 log_level = 'INFO'
@@ -63,9 +63,9 @@ mp_start_method = 'fork'
 
 
 dataset_type = 'RawframeDataset'
-ann_file_test = 'data/wlasl/test_rawframes_annotations.txt'
-ann_file_train = 'data/wlasl/train_rawframes_annotations.txt'
-ann_file_val = 'data/wlasl/val_rawframes_annotations.txt'
+ann_file_test = 'data/wlasl/test_annotations.txt'
+ann_file_train = 'data/wlasl/train_annotations.txt'
+ann_file_val = 'data/wlasl/val_annotations.txt'
 data_root = 'data/wlasl/rawframes/'
 data_root_val = 'data/wlasl/rawframes/'
 
@@ -133,7 +133,7 @@ data = dict(
     test_dataloader=dict(videos_per_gpu=1),
     train=dict(
         type='RawframeDataset',
-        ann_file='data/wlasl/train_rawframes_annotations.txt',
+        ann_file='data/wlasl/train_annotations.txt',
         data_prefix='data/wlasl/rawframes/',
         pipeline=[
             dict(
@@ -157,7 +157,7 @@ data = dict(
         ]),
     val=dict(
         type='RawframeDataset',
-        ann_file='data/wlasl/val_rawframes_annotations.txt',
+        ann_file='data/wlasl/val_annotations.txt',
         data_prefix='data/wlasl/rawframes/',
         pipeline=[
             dict(
@@ -180,7 +180,7 @@ data = dict(
         ]),
     test=dict(
         type='RawframeDataset',
-        ann_file='data/wlasl/test_rawframes_annotations.txt',
+        ann_file='data/wlasl/test_annotations.txt',
         data_prefix='data/wlasl/rawframes/',
         pipeline=[
             dict(
@@ -203,7 +203,7 @@ data = dict(
         ]))
 evaluation = dict(
     interval=5, metrics=['top_k_accuracy', 'mean_class_accuracy'])
-optimizer = dict(type='SGD', lr=0.1, momentum=0.9, weight_decay=0.0001)
+optimizer = dict(type='SGD', lr=0.1/8, momentum=0.9, weight_decay=0.0001)
 optimizer_config = dict(grad_clip=dict(max_norm=40, norm_type=2))
 lr_config = dict(
     policy='CosineAnnealing',

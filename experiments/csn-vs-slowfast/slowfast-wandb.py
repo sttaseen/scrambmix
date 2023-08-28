@@ -1,36 +1,58 @@
+# Original file - slowfast_r50_8x8x1_256e_kinetics400_rgb.py
+
 model = dict(
     type='Recognizer3D',
     backbone=dict(
-        type='ResNet3dCSN',
-        pretrained2d=False,
-        pretrained='https://download.openmmlab.com/mmaction/recognition/csn/ircsn_from_scratch_r50_ig65m_20210617-ce545a37.pth',
-        depth=50,
-        with_pool2=False,
-        bottleneck_mode='ir',
-        norm_eval=True,
-        zero_init_residual=False,
-        bn_frozen=True),
+        type='ResNet3dSlowFast',
+        pretrained=None,
+        resample_rate=4,
+        speed_ratio=4,
+        channel_ratio=8,
+        slow_pathway=dict(
+            type='resnet3d',
+            depth=50,
+            pretrained=None,
+            lateral=True,
+            conv1_kernel=(1, 7, 7),
+            dilations=(1, 1, 1, 1),
+            conv1_stride_t=1,
+            pool1_stride_t=1,
+            inflate=(0, 0, 1, 1),
+            norm_eval=False,
+            fusion_kernel=7),
+        fast_pathway=dict(
+            type='resnet3d',
+            depth=50,
+            pretrained=None,
+            lateral=False,
+            base_channels=8,
+            conv1_kernel=(5, 7, 7),
+            conv1_stride_t=1,
+            pool1_stride_t=1,
+            norm_eval=False)),
     cls_head=dict(
-        type='I3DHead',
+        type='SlowFastHead',
+        in_channels=2304,
         num_classes=100,
-        in_channels=2048,
         spatial_type='avg',
-        dropout_ratio=0.5,
-        init_std=0.01),
+        dropout_ratio=0.5),
     train_cfg=None,
-    test_cfg=dict(average_clips='prob', max_testing_views=10))
-checkpoint_config = dict(interval=20)
+    test_cfg=dict(average_clips='prob'))
+checkpoint_config = dict(interval=10)
+
+# Setup WandB
 log_config = dict(interval=10,
                  hooks=[
                         dict(type='TextLoggerHook'),
                         dict(type='WandbLoggerHook',
                         init_kwargs={
                          'entity': "760-p6",
-                         'project': "slowfast-wlasl-100",
-                         'name': "csn-50",
+                         'project': "slowfast-csn-wlasl100",
+                         'group': 'slowfast'
                         },
                         log_artifact=True)
 ])
+
 dist_params = dict(backend='nccl')
 log_level = 'INFO'
 load_from = None
@@ -38,12 +60,16 @@ resume_from = None
 workflow = [('train', 1)]
 opencv_num_threads = 0
 mp_start_method = 'fork'
+
+
 dataset_type = 'RawframeDataset'
-data_root = 'data/wlasl/rawframes'
-data_root_val = 'data/wlasl/rawframes'
-ann_file_train = 'data/wlasl/train_annotations.txt'
-ann_file_val = 'data/wlasl/test_annotations.txt'
 ann_file_test = 'data/wlasl/test_annotations.txt'
+ann_file_train = 'data/wlasl/train_annotations.txt'
+ann_file_val = 'data/wlasl/val_annotations.txt'
+data_root = 'data/wlasl/rawframes/'
+data_root_val = 'data/wlasl/rawframes/'
+
+
 img_norm_cfg = dict(
     mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_bgr=False)
 train_pipeline = [
@@ -62,7 +88,6 @@ train_pipeline = [
     dict(type='Collect', keys=['imgs', 'label'], meta_keys=[]),
     dict(type='ToTensor', keys=['imgs', 'label'])
 ]
-gpu_ids = range(0, 1)
 val_pipeline = [
     dict(
         type='SampleFrames',
@@ -101,15 +126,15 @@ test_pipeline = [
     dict(type='Collect', keys=['imgs', 'label'], meta_keys=[]),
     dict(type='ToTensor', keys=['imgs'])
 ]
+gpu_ids = range(0, 1)
 data = dict(
     videos_per_gpu=8,
-    workers_per_gpu=1,
+    workers_per_gpu=2,
     test_dataloader=dict(videos_per_gpu=1),
-    val_dataloader=dict(videos_per_gpu=1),
     train=dict(
         type='RawframeDataset',
         ann_file='data/wlasl/train_annotations.txt',
-        data_prefix='data/wlasl/rawframes',
+        data_prefix='data/wlasl/rawframes/',
         pipeline=[
             dict(
                 type='SampleFrames',
@@ -132,8 +157,8 @@ data = dict(
         ]),
     val=dict(
         type='RawframeDataset',
-        ann_file='data/wlasl/test_annotations.txt',
-        data_prefix='data/wlasl/rawframes',
+        ann_file='data/wlasl/val_annotations.txt',
+        data_prefix='data/wlasl/rawframes/',
         pipeline=[
             dict(
                 type='SampleFrames',
@@ -156,7 +181,7 @@ data = dict(
     test=dict(
         type='RawframeDataset',
         ann_file='data/wlasl/test_annotations.txt',
-        data_prefix='data/wlasl/rawframes',
+        data_prefix='data/wlasl/rawframes/',
         pipeline=[
             dict(
                 type='SampleFrames',
@@ -177,18 +202,17 @@ data = dict(
             dict(type='ToTensor', keys=['imgs'])
         ]))
 evaluation = dict(
-    interval=1, metrics=['top_k_accuracy', 'mean_class_accuracy'])
-optimizer = dict(type='SGD', lr=0.000125, momentum=0.9, weight_decay=0.0001)
+    interval=5, metrics=['top_k_accuracy', 'mean_class_accuracy'])
+optimizer = dict(type='SGD', lr=0.1/8, momentum=0.9, weight_decay=0.0001)
 optimizer_config = dict(grad_clip=dict(max_norm=40, norm_type=2))
 lr_config = dict(
-    policy='step',
-    step=[60, 120],
+    policy='CosineAnnealing',
+    min_lr=0,
     warmup='linear',
-    warmup_ratio=0.1,
     warmup_by_epoch=True,
-    warmup_iters=16)
-total_epochs =150
-work_dir = './work_dirs/0/ircsn_ig65m_pretrained_bnfrozen_r50_32x2x1_58e_kinetics400_rgb/'
-find_unused_parameters = True
+    warmup_iters=34)
+total_epochs = 256
+work_dir = './work_dirs/slowfast_r50_3d_8x8x1_256e_kinetics400_rgb'
+find_unused_parameters = False
 omnisource = False
 module_hooks = []

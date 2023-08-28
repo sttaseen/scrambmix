@@ -165,8 +165,9 @@ log_config = dict(interval=10, hooks=[
     dict(type='TextLoggerHook'),
     dict(type='WandbLoggerHook',
          init_kwargs={
-             'entity': "cares",
-             'project': "wlasl-100"
+             'entity': "760-p6",
+             'project': "slowfast-wlasl-100"
+             'group': "group-name"},
          },
          log_artifact=True)
 ]

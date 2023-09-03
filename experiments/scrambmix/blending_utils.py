@@ -4,6 +4,7 @@ from abc import ABCMeta, abstractmethod
 import torch
 import torch.nn.functional as F
 from torch.distributions.beta import Beta
+from scipy import stats
 
 from .builder import BLENDINGS
 
@@ -92,6 +93,47 @@ class Scrambmix(BaseMiniBatchBlending):
 
     Args:
         num_classes (int): The number of classes.
+        num_frames (int): The number of frames.
+        alpha (float): Parameters for Beta Binomial distribution.
+    """
+
+    def __init__(self, num_classes, num_frames, alpha=5):
+        super().__init__(num_classes=num_classes)
+        self.num_frames = num_frames
+        self.beta_binom = stats.betabinom(num_frames, alpha, alpha, loc=0)
+
+    def do_blending(self, imgs, label, **kwargs):
+        """Blending images with scrambmix."""
+
+        assert len(kwargs) == 0, f'unexpected kwargs for mixup {kwargs}'
+
+        batch_size = imgs.size(0)
+        
+        epsilon = self.beta_binom.rvs()
+        interval = round(self.num_frames/epsilon)
+        lam = 1/interval
+        rand_index = torch.randperm(batch_size)
+
+        mask = torch.arange(self.num_frames) % interval == 0
+
+        A = imgs
+        B = A.clone()[rand_index, ...]
+
+        A[..., mask, :, :] = 0
+        B[..., ~mask, :, :] = 0
+
+        mixed_imgs = A + B
+        mixed_label = (1 - lam) * label +  lam * label[rand_index, :]
+
+        return mixed_imgs, mixed_label
+    
+    
+@BLENDINGS.register_module()
+class Scrambmix_v1(BaseMiniBatchBlending):
+    """Implementing Scrambmix in a mini-batch.
+
+    Args:
+        num_classes (int): The number of classes.
         alpha (float): Parameters for Beta distribution.
     """
 
@@ -122,7 +164,7 @@ class Scrambmix(BaseMiniBatchBlending):
             
         mixed_imgs = torch.stack(batch_list).permute(0, 2, 3, 1, 4, 5)
 
-        mixed_label = lam * label + (1 - lam) * label[rand_index, :]
+        mixed_label = (1 - lam)  * label + lam * label[rand_index, :]
 
         return mixed_imgs, mixed_label
 

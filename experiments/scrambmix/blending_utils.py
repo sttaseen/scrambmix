@@ -100,7 +100,7 @@ class Scrambmix(BaseMiniBatchBlending):
     def __init__(self, num_classes, num_frames, alpha=5):
         super().__init__(num_classes=num_classes)
         self.num_frames = num_frames
-        self.beta_binom = stats.betabinom(num_frames, alpha, alpha, loc=0)
+        self.beta_binom = stats.betabinom(num_frames-1, alpha, alpha, loc=0)
 
     def do_blending(self, imgs, label, **kwargs):
         """Blending images with scrambmix."""
@@ -109,7 +109,7 @@ class Scrambmix(BaseMiniBatchBlending):
 
         batch_size = imgs.size(0)
         
-        epsilon = self.beta_binom.rvs()
+        epsilon = self.beta_binom.rvs() + 1
         interval = round(self.num_frames/epsilon)
         lam = 1/interval
         rand_index = torch.randperm(batch_size)

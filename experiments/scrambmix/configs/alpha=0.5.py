@@ -30,7 +30,7 @@ log_config = dict(interval=10,
                          'entity': "760-p6",
                          'project': "scrambmix",
                          'group': 'alpha',
-                         'name':'0.5'
+                         'name':'0.1'
                         },
                         log_artifact=True)
 ])
@@ -192,7 +192,7 @@ lr_config = dict(
     warmup_by_epoch=True,
     warmup_iters=16)
 total_epochs =100
-work_dir = './work_dirs/alpha=0.5/'
+work_dir = './work_dirs/alpha=0.1/'
 find_unused_parameters = True
 omnisource = False
 module_hooks = []

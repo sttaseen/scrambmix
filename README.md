@@ -105,9 +105,13 @@ conda activate scrambmix
 Make sure to run ```conda activate scrambmix``` before running any of the scripts in this repo.
 
 ### Installing Dependencies
-Install PyTorch by running the following:
+For non-Mac OS, install PyTorch by running the following:
 ```
 pip install torch==1.11.0+cu113 torchvision==0.12.0+cu113 torchaudio==0.11.0 --extra-index-url https://download.pytorch.org/whl/cu113
+```
+If you are on Mac OS with MPS acceleration, run the following instead:
+```
+pip3 install --pre torch torchvision torchaudio --index-url https://download.pytorch.org/whl/nightly/cpu
 ```
 
 **Note:** To fully utilise cuda, make sure to have nvidia graphics drivers installed and running. To check, run ```nvidia-smi```.
@@ -122,17 +126,31 @@ To install all the other modules, navigate to the root directory of this repo af
 ```
 pip install -r requirements.txt
 ```
+Install [Decord](https://github.com/dmlc/decord). For Mac OS, check their [repo](https://github.com/dmlc/decord#mac-os) for more info.
+```
+pip install decord==0.6.0
+```
 Install mmcv:
 ```
 pip install -U openmim
 mim install mmcv-full
 ```
-Assuming current directory is the root of the repository, install mmaction2 from source:
+For non-Mac OS, assuming the current directory is the root of the repository, install mmaction2 from source:
 ```
 cd mmaction2
+pip install -r requirements/build.txt
 pip install -v -e .  
 cd ..
 ```
+
+If you are on Mac OS, run the following instead:
+```
+cd mmaction2
+pip install -r requirements/build.txt
+CC=clang CXX=clang++ CFLAGS='-stdlib=libc++' pip install -e . 
+cd ..
+```
+
 This one is optional but to use the conda environment in Notebook, run:
 ```
 conda install ipykernel -y

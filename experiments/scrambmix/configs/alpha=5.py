@@ -28,8 +28,8 @@ log_config = dict(interval=10,
                         dict(type='WandbLoggerHook',
                         init_kwargs={
                          'entity': "760-p6",
-                         'project': "scrambmix",
-                         'group': 'init'
+                         'project': "scrambmix-v3",
+                         'group': 'alpha=5'
                         },
                         log_artifact=True)
 ])

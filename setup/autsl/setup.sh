@@ -13,14 +13,9 @@ cd ../..
 
 # Extract raw frames
 python mmaction2/tools/data/build_rawframes.py data/autsl/test data/autsl/rawframes/test --ext mp4 --task rgb --level 1 --num-worker $n_workers --out-format jpg --use-opencv
-rm -rf data/autsl/test
-rm -rf ~/.local/share/Trash/*
 python mmaction2/tools/data/build_rawframes.py data/autsl/val data/autsl/rawframes/val --ext mp4 --task rgb --level 1 --num-worker $n_workers --out-format jpg --use-opencv
-rm -rf data/autsl/val
-rm -rf ~/.local/share/Trash/*
 python mmaction2/tools/data/build_rawframes.py data/autsl/train data/autsl/rawframes/train --ext mp4 --task rgb --level 1 --num-worker $n_workers --out-format jpg --use-opencv
-rm -rf data/autsl/train
-rm -rf ~/.local/share/Trash/*
+
 
 # Build labels
 python tools/autsl/build_labels.py data/autsl

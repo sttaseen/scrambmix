@@ -12,12 +12,15 @@ model = dict(
         bn_frozen=True),
     cls_head=dict(
         type='I3DHead',
-        num_classes=51,
+        num_classes=52,
         in_channels=2048,
         spatial_type='avg',
         dropout_ratio=0.5,
         init_std=0.01),
-    train_cfg = None,
+    # train_cfg=dict(blending=dict(type='Scrambmix', num_classes=52, num_frames=32, alpha=5)),
+    train_cfg=dict(blending=dict(type='CutmixBlending', num_classes=52, alpha=1)),
+    # train_cfg =dict(type='MixupBlending', alpha=0.8, num_classes=52),
+    # train_cfg = None,
     test_cfg=dict(average_clips='prob', max_testing_views=10))
 checkpoint_config = dict(interval=5)
 
@@ -28,8 +31,8 @@ log_config = dict(interval=10,
                         dict(type='WandbLoggerHook',
                         init_kwargs={
                          'entity': "760-p6",
-                         'project': "hmb51",
-                         'group': 'test'
+                         'project': "hmdb51",
+                         'group': 'Scrambmix'
                         },
                         log_artifact=True)
 ])
@@ -42,7 +45,7 @@ workflow = [('train', 1)]
 opencv_num_threads = 0
 mp_start_method = 'fork'
 dataset_type = 'RawframeDataset'
-data_root = 'data/hmdb/rawframes'
+data_root = 'data/hmdb51/rawframes'
 data_root_val = 'data/hmdb51/rawframes'
 ann_file_train = 'data/hmdb51/annotation_train.txt'
 ann_file_val = 'data/hmdb51/annotation_test.txt'
@@ -191,7 +194,7 @@ lr_config = dict(
     warmup_by_epoch=True,
     warmup_iters=16)
 total_epochs =150
-work_dir = './work_dirs/v3-2-scrambmix/'
+work_dir = './work_dirs/v3-5-scrambmix/'
 find_unused_parameters = True
 omnisource = False
 module_hooks = []

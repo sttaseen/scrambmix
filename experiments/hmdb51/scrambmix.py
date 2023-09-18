@@ -17,10 +17,10 @@ model = dict(
         spatial_type='avg',
         dropout_ratio=0.5,
         init_std=0.01),
-    train_cfg=dict(blending=dict(type='Scrambmix', num_classes=51, num_frames=32, alpha=5)),
+    # train_cfg=dict(blending=dict(type='Scrambmix', num_classes=51, num_frames=32, alpha=5)),
     # train_cfg=dict(blending=dict(type='CutmixBlending', num_classes=51, alpha=1)),
     # train_cfg =dict(type='MixupBlending', alpha=0.8, num_classes=51),
-    # train_cfg = None
+    train_cfg = None
     test_cfg=dict(average_clips='prob', max_testing_views=10))
 checkpoint_config = dict(interval=5)
 

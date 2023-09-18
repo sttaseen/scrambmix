@@ -43,10 +43,10 @@ opencv_num_threads = 0
 mp_start_method = 'fork'
 dataset_type = 'RawframeDataset'
 data_root = 'data/hmdb/rawframes'
-data_root_val = 'data/hmdb/rawframes'
-ann_file_train = 'data/hmdb/annotation_train.txt'
-ann_file_val = 'data/hmdb/annotation_test.txt'
-ann_file_test = 'data/hmdb/annotation_test.txt'
+data_root_val = 'data/hmdb51/rawframes'
+ann_file_train = 'data/hmdb51/annotation_train.txt'
+ann_file_val = 'data/hmdb51/annotation_test.txt'
+ann_file_test = 'data/hmdb51/annotation_test.txt'
 img_norm_cfg = dict(
     mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_bgr=False)
 train_pipeline = [
@@ -111,8 +111,8 @@ data = dict(
     val_dataloader=dict(videos_per_gpu=1),
     train=dict(
         type='RawframeDataset',
-        ann_file='data/hmdb/annotation_train.txt',
-        data_prefix='data/hmdb/rawframes',
+        ann_file='data/hmdb51/annotation_train.txt',
+        data_prefix='data/hmdb51/rawframes',
         pipeline=[
             dict(
                 type='SampleFrames',
@@ -135,8 +135,8 @@ data = dict(
         ]),
     val=dict(
         type='RawframeDataset',
-        ann_file='data/hmdb/annotation_test.txt',
-        data_prefix='data/hmdb/rawframes',
+        ann_file='data/hmdb51/annotation_test.txt',
+        data_prefix='data/hmdb51/rawframes',
         pipeline=[
             dict(
                 type='SampleFrames',
@@ -158,8 +158,8 @@ data = dict(
         ]),
     test=dict(
         type='RawframeDataset',
-        ann_file='data/hmdb/annotation_test.txt',
-        data_prefix='data/hmdb/rawframes',
+        ann_file='data/hmdb51/annotation_test.txt',
+        data_prefix='data/hmdb51/rawframes',
         pipeline=[
             dict(
                 type='SampleFrames',

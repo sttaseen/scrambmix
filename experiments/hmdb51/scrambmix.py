@@ -25,17 +25,17 @@ model = dict(
 checkpoint_config = dict(interval=5)
 
 # Setup WandB
-# log_config = dict(interval=10,
-#                  hooks=[
-#                         dict(type='TextLoggerHook'),
-#                         dict(type='WandbLoggerHook',
-#                         init_kwargs={
-#                          'entity': "760-p6",
-#                          'project': "hmdb51",
-#                          'group': 'Scrambmix'
-#                         },
-#                         log_artifact=True)
-# ])
+log_config = dict(interval=10,
+                 hooks=[
+                        dict(type='TextLoggerHook'),
+                        dict(type='WandbLoggerHook',
+                        init_kwargs={
+                         'entity': "760-p6",
+                         'project': "hmdb51",
+                         'group': 'Scrambmix'
+                        },
+                        log_artifact=True)
+])
 
 dist_params = dict(backend='nccl')
 log_level = 'INFO'

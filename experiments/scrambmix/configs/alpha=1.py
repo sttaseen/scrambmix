@@ -3,7 +3,7 @@ model = dict(
     backbone=dict(
         type='ResNet3dCSN',
         pretrained2d=False,
-        pretrained='pretrained_csn_autsl.pth',
+        pretrained='trimmed.pth',
         depth=50,
         with_pool2=False,
         bottleneck_mode='ir',
@@ -17,9 +17,9 @@ model = dict(
         spatial_type='avg',
         dropout_ratio=0.5,
         init_std=0.01),
-    train_cfg=dict(blending=dict(type='Scrambmix', num_classes=226, num_frames=32, alpha=1)),
+    train_cfg=dict(blending=dict(type='Scrambmix', num_classes=226, num_frames=32, alpha=0.2)),
     test_cfg=dict(average_clips='prob', max_testing_views=10))
-checkpoint_config = dict(interval=1)
+checkpoint_config = dict(interval=5)
 
 # Setup WandB
 log_config = dict(interval=10,
@@ -28,9 +28,8 @@ log_config = dict(interval=10,
                         dict(type='WandbLoggerHook',
                         init_kwargs={
                          'entity': "760-p6",
-                         'project': "scrambmix",
-                         'group': 'alpha',
-                         'name':'1'
+                         'project': "scrambmix-v3",
+                         'group': 'alpha=0.2-2'
                         },
                         log_artifact=True)
 ])
@@ -186,13 +185,13 @@ optimizer = dict(type='SGD', lr=0.000125, momentum=0.9, weight_decay=0.0001)
 optimizer_config = dict(grad_clip=dict(max_norm=40, norm_type=2))
 lr_config = dict(
     policy='step',
-    step=[80, 145],
+    step=[70, 140],
     warmup='linear',
     warmup_ratio=0.1,
     warmup_by_epoch=True,
     warmup_iters=16)
 total_epochs =150
-work_dir = './work_dirs/alpha=1/'
+work_dir = './work_dirs/v3-0.2-scrambmix/'
 find_unused_parameters = True
 omnisource = False
 module_hooks = []

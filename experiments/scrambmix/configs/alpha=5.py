@@ -28,7 +28,7 @@ log_config = dict(interval=10,
                         dict(type='WandbLoggerHook',
                         init_kwargs={
                          'entity': "760-p6",
-                         'project': "scrambmix-v3",
+                         'project': "scrambmix-encoding-fixed",
                          'group': 'alpha=5'
                         },
                         log_artifact=True)

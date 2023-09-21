@@ -159,14 +159,8 @@ class Scrambmix(BaseMiniBatchBlending):
         mixed_imgs = A + B
         mixed_label = lam * theta * label + (1 - lam) * theta * label[rand_index, :] + \
             lam * (1-theta) * label[rand_index, :] + (1-lam) * (1-theta) * label
-        
-        debug = dict()
-        debug['label_permute'] = label[rand_index, :]
-        debug['bbx'] = (bbx1, bby1, bbx2, bby2)
-        debug['theta'] = theta
-        debug['lam'] = lam
 
-        return mixed_imgs, mixed_label, debug
+        return mixed_imgs, mixed_label
     
 
 @BLENDINGS.register_module()

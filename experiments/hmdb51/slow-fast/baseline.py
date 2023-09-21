@@ -65,7 +65,7 @@ mp_start_method = 'fork'
 dataset_type = 'RawframeDataset'
 ann_file_test = 'data/hmdb51/annotation_test.txt'
 ann_file_train = 'data/hmdb51/annotation_train.txt'
-ann_file_val = 'data/hmdb51/val_annotations.txt'
+ann_file_val = 'data/hmdb51/annotation_val.txt'
 data_root = 'data/hmdb51/rawframes/'
 data_root_val = 'data/hmdb51/rawframes/'
 
@@ -157,7 +157,7 @@ data = dict(
         ]),
     val=dict(
         type='RawframeDataset',
-        ann_file='data/hmdb51/val_annotations.txt',
+        ann_file='data/hmdb51/annotation_val.txt',
         data_prefix='data/hmdb51/rawframes/',
         pipeline=[
             dict(

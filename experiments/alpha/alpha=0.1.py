@@ -1,44 +1,25 @@
-# Original file - slowfast_r50_8x8x1_256e_kinetics400_rgb.py
-
 model = dict(
     type='Recognizer3D',
     backbone=dict(
-        type='ResNet3dSlowFast',
-        pretrained=None,
-        resample_rate=4,
-        speed_ratio=4,
-        channel_ratio=8,
-        slow_pathway=dict(
-            type='resnet3d',
-            depth=50,
-            pretrained=None,
-            lateral=True,
-            conv1_kernel=(1, 7, 7),
-            dilations=(1, 1, 1, 1),
-            conv1_stride_t=1,
-            pool1_stride_t=1,
-            inflate=(0, 0, 1, 1),
-            norm_eval=False,
-            fusion_kernel=7),
-        fast_pathway=dict(
-            type='resnet3d',
-            depth=50,
-            pretrained=None,
-            lateral=False,
-            base_channels=8,
-            conv1_kernel=(5, 7, 7),
-            conv1_stride_t=1,
-            pool1_stride_t=1,
-            norm_eval=False)),
+        type='ResNet3dCSN',
+        pretrained2d=False,
+        pretrained='https://download.openmmlab.com/mmaction/recognition/csn/ircsn_from_scratch_r50_ig65m_20210617-ce545a37.pth',
+        depth=50,
+        with_pool2=False,
+        bottleneck_mode='ir',
+        norm_eval=True,
+        zero_init_residual=False,
+        bn_frozen=True),
     cls_head=dict(
-        type='SlowFastHead',
-        in_channels=2304,
+        type='I3DHead',
         num_classes=52,
+        in_channels=2048,
         spatial_type='avg',
-        dropout_ratio=0.5),
-    train_cfg=None,
-    test_cfg=dict(average_clips='prob'))
-checkpoint_config = dict(interval=10)
+        dropout_ratio=0.5,
+        init_std=0.01),
+    train_cfg=dict(blending=dict(type='Scrambmix', num_classes=52, num_frames=32, alpha=0.1)),
+    test_cfg=dict(average_clips='prob', max_testing_views=10))
+checkpoint_config = dict(interval=5)
 
 # Setup WandB
 log_config = dict(interval=10,
@@ -47,8 +28,8 @@ log_config = dict(interval=10,
                         dict(type='WandbLoggerHook',
                         init_kwargs={
                          'entity': "760-p6",
-                         'project': "slowfast-hmdb51",
-                         'group': 'baseline'
+                         'project': "alpha-hmdb",
+                         'group': 'alpha=0.1'
                         },
                         log_artifact=True)
 ])
@@ -60,16 +41,12 @@ resume_from = None
 workflow = [('train', 1)]
 opencv_num_threads = 0
 mp_start_method = 'fork'
-
-
 dataset_type = 'RawframeDataset'
-ann_file_test = 'data/hmdb51/annotation_test.txt'
+data_root = 'data/hmdb51/rawframes'
+data_root_val = 'data/hmdb51/rawframes'
 ann_file_train = 'data/hmdb51/annotation_train.txt'
-ann_file_val = 'data/hmdb51/annotation_val.txt'
-data_root = 'data/hmdb51/rawframes/'
-data_root_val = 'data/hmdb51/rawframes/'
-
-
+ann_file_val = 'data/hmdb51/annotation_test.txt'
+ann_file_test = 'data/hmdb51/annotation_test.txt'
 img_norm_cfg = dict(
     mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_bgr=False)
 train_pipeline = [
@@ -88,6 +65,7 @@ train_pipeline = [
     dict(type='Collect', keys=['imgs', 'label'], meta_keys=[]),
     dict(type='ToTensor', keys=['imgs', 'label'])
 ]
+gpu_ids = range(0, 1)
 val_pipeline = [
     dict(
         type='SampleFrames',
@@ -126,15 +104,15 @@ test_pipeline = [
     dict(type='Collect', keys=['imgs', 'label'], meta_keys=[]),
     dict(type='ToTensor', keys=['imgs'])
 ]
-gpu_ids = range(0, 1)
 data = dict(
-    videos_per_gpu=8,
-    workers_per_gpu=2,
+    videos_per_gpu=10,
+    workers_per_gpu=4,
     test_dataloader=dict(videos_per_gpu=1),
+    val_dataloader=dict(videos_per_gpu=1),
     train=dict(
         type='RawframeDataset',
         ann_file='data/hmdb51/annotation_train.txt',
-        data_prefix='data/hmdb51/rawframes/',
+        data_prefix='data/hmdb51/rawframes',
         pipeline=[
             dict(
                 type='SampleFrames',
@@ -158,7 +136,7 @@ data = dict(
     val=dict(
         type='RawframeDataset',
         ann_file='data/hmdb51/annotation_test.txt',
-        data_prefix='data/hmdb51/rawframes/',
+        data_prefix='data/hmdb51/rawframes',
         pipeline=[
             dict(
                 type='SampleFrames',
@@ -181,7 +159,7 @@ data = dict(
     test=dict(
         type='RawframeDataset',
         ann_file='data/hmdb51/annotation_test.txt',
-        data_prefix='data/hmdb51/rawframes/',
+        data_prefix='data/hmdb51/rawframes',
         pipeline=[
             dict(
                 type='SampleFrames',
@@ -203,16 +181,17 @@ data = dict(
         ]))
 evaluation = dict(
     interval=5, metrics=['top_k_accuracy', 'mean_class_accuracy'])
-optimizer = dict(type='SGD', lr=0.1/8, momentum=0.9, weight_decay=0.0001)
+optimizer = dict(type='SGD', lr=0.000125, momentum=0.9, weight_decay=0.0001)
 optimizer_config = dict(grad_clip=dict(max_norm=40, norm_type=2))
 lr_config = dict(
-    policy='CosineAnnealing',
-    min_lr=0,
+    policy='step',
+    step=[70, 140],
     warmup='linear',
+    warmup_ratio=0.1,
     warmup_by_epoch=True,
-    warmup_iters=34)
-total_epochs = 256
-work_dir = './work_dirs/slowfast_r50_3d_8x8x1_256e_kinetics400_rgb'
-find_unused_parameters = False
+    warmup_iters=16)
+total_epochs =150
+work_dir = './work_dirs/v3-5-scrambmix/'
+find_unused_parameters = True
 omnisource = False
 module_hooks = []

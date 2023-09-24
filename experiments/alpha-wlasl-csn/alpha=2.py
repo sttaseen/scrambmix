@@ -28,7 +28,7 @@ log_config = dict(interval=10,
                         dict(type='WandbLoggerHook',
                         init_kwargs={
                          'entity': "cares",
-                         'project': "alpha-wlasl",
+                         'project': "alpha-wlasl-lr-fixed",
                          'group': 'alpha=2'
                         },
                         log_artifact=True)

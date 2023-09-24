@@ -185,12 +185,12 @@ optimizer = dict(type='SGD', lr=0.000125, momentum=0.9, weight_decay=0.0001)
 optimizer_config = dict(grad_clip=dict(max_norm=40, norm_type=2))
 lr_config = dict(
     policy='step',
-    step=[190],
+    step=[290],
     warmup='linear',
     warmup_ratio=0.1,
     warmup_by_epoch=True,
     warmup_iters=16)
-total_epochs =200
+total_epochs =300
 work_dir = './work_dirs/a=4/'
 find_unused_parameters = True
 omnisource = False

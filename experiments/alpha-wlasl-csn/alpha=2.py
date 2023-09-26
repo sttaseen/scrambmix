@@ -190,7 +190,7 @@ lr_config = dict(
     warmup_ratio=0.1,
     warmup_by_epoch=True,
     warmup_iters=16)
-total_epochs =300
+total_epochs =400
 work_dir = './work_dirs/a=2/'
 find_unused_parameters = True
 omnisource = False

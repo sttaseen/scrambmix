@@ -164,7 +164,7 @@ class Scrambmix(BaseMiniBatchBlending):
     
 
 @BLENDINGS.register_module()
-class Scrambmix_v3(BaseMiniBatchBlending):
+class ReverseScrambmix(BaseMiniBatchBlending):
     """Implementing Scrambmix in a mini-batch.
 
     Args:

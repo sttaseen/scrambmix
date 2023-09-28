@@ -105,8 +105,8 @@ test_pipeline = [
 ]
 gpu_ids = [7]
 data = dict(
-    videos_per_gpu=25,
-    workers_per_gpu=8,
+    videos_per_gpu=30,
+    workers_per_gpu=12,
     test_dataloader=dict(videos_per_gpu=1),
     val_dataloader=dict(videos_per_gpu=1),
     train=dict(

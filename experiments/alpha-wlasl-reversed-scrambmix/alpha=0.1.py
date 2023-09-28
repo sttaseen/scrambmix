@@ -65,7 +65,6 @@ train_pipeline = [
     dict(type='Collect', keys=['imgs', 'label'], meta_keys=[]),
     dict(type='ToTensor', keys=['imgs', 'label'])
 ]
-gpu_ids = range(0, 1)
 val_pipeline = [
     dict(
         type='SampleFrames',
@@ -104,9 +103,10 @@ test_pipeline = [
     dict(type='Collect', keys=['imgs', 'label'], meta_keys=[]),
     dict(type='ToTensor', keys=['imgs'])
 ]
+gpu_ids = [7]
 data = dict(
-    videos_per_gpu=10,
-    workers_per_gpu=4,
+    videos_per_gpu=25,
+    workers_per_gpu=8,
     test_dataloader=dict(videos_per_gpu=1),
     val_dataloader=dict(videos_per_gpu=1),
     train=dict(

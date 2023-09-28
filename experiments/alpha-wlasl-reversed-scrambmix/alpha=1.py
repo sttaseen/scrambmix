@@ -28,7 +28,7 @@ log_config = dict(interval=10,
                         dict(type='WandbLoggerHook',
                         init_kwargs={
                          'entity': "cares",
-                         'project': "alpha-wlasl-grid-mismatch-label",
+                         'project': "alpha-reverse-wlasl",
                          'group': 'alpha=1'
                         },
                         log_artifact=True)
@@ -105,8 +105,10 @@ test_pipeline = [
     dict(type='ToTensor', keys=['imgs'])
 ]
 data = dict(
-    videos_per_gpu=10,
-    workers_per_gpu=4,
+    # videos_per_gpu=10,
+    # workers_per_gpu=4,
+    videos_per_gpu=32,
+    workers_per_gpu=32,
     test_dataloader=dict(videos_per_gpu=1),
     val_dataloader=dict(videos_per_gpu=1),
     train=dict(

@@ -3,7 +3,7 @@ model = dict(
     backbone=dict(
         type='ResNet3dCSN',
         pretrained2d=False,
-        pretrained='trimmed.pth',
+        pretrained='https://download.openmmlab.com/mmaction/recognition/csn/ircsn_from_scratch_r50_ig65m_20210617-ce545a37.pth',
         depth=50,
         with_pool2=False,
         bottleneck_mode='ir',
@@ -12,12 +12,12 @@ model = dict(
         bn_frozen=True),
     cls_head=dict(
         type='I3DHead',
-        num_classes=226,
+        num_classes=100,
         in_channels=2048,
         spatial_type='avg',
         dropout_ratio=0.5,
         init_std=0.01),
-    train_cfg=dict(blending=dict(type='Scrambmix', num_classes=226, num_frames=32, alpha=5)),
+    train_cfg=dict(blending=dict(type='Scrambmix', num_classes=100, num_frames=32, alpha=0.5)),
     test_cfg=dict(average_clips='prob', max_testing_views=10))
 checkpoint_config = dict(interval=5)
 
@@ -27,9 +27,9 @@ log_config = dict(interval=10,
                         dict(type='TextLoggerHook'),
                         dict(type='WandbLoggerHook',
                         init_kwargs={
-                         'entity': "760-p6",
-                         'project': "scrambmix-encoding-fixed",
-                         'group': 'alpha=5'
+                         'entity': "cares",
+                         'project': "alpha-wlasl-grid",
+                         'group': 'alpha=0.5'
                         },
                         log_artifact=True)
 ])
@@ -42,11 +42,11 @@ workflow = [('train', 1)]
 opencv_num_threads = 0
 mp_start_method = 'fork'
 dataset_type = 'RawframeDataset'
-data_root = 'data/autsl/rawframes'
-data_root_val = 'data/autsl/rawframes'
-ann_file_train = 'data/autsl/train_annotations.txt'
-ann_file_val = 'data/autsl/test_annotations.txt'
-ann_file_test = 'data/autsl/test_annotations.txt'
+data_root = 'data/wlasl/rawframes'
+data_root_val = 'data/wlasl/rawframes'
+ann_file_train = 'data/wlasl/train_annotations.txt'
+ann_file_val = 'data/wlasl/test_annotations.txt'
+ann_file_test = 'data/wlasl/test_annotations.txt'
 img_norm_cfg = dict(
     mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_bgr=False)
 train_pipeline = [
@@ -111,8 +111,8 @@ data = dict(
     val_dataloader=dict(videos_per_gpu=1),
     train=dict(
         type='RawframeDataset',
-        ann_file='data/autsl/train_annotations.txt',
-        data_prefix='data/autsl/rawframes',
+        ann_file='data/wlasl/train_annotations.txt',
+        data_prefix='data/wlasl/rawframes',
         pipeline=[
             dict(
                 type='SampleFrames',
@@ -135,8 +135,8 @@ data = dict(
         ]),
     val=dict(
         type='RawframeDataset',
-        ann_file='data/autsl/test_annotations.txt',
-        data_prefix='data/autsl/rawframes',
+        ann_file='data/wlasl/test_annotations.txt',
+        data_prefix='data/wlasl/rawframes',
         pipeline=[
             dict(
                 type='SampleFrames',
@@ -158,8 +158,8 @@ data = dict(
         ]),
     test=dict(
         type='RawframeDataset',
-        ann_file='data/autsl/test_annotations.txt',
-        data_prefix='data/autsl/rawframes',
+        ann_file='data/wlasl/test_annotations.txt',
+        data_prefix='data/wlasl/rawframes',
         pipeline=[
             dict(
                 type='SampleFrames',
@@ -185,13 +185,13 @@ optimizer = dict(type='SGD', lr=0.000125, momentum=0.9, weight_decay=0.0001)
 optimizer_config = dict(grad_clip=dict(max_norm=40, norm_type=2))
 lr_config = dict(
     policy='step',
-    step=[70, 140],
+    step=[290, 450],
     warmup='linear',
     warmup_ratio=0.1,
     warmup_by_epoch=True,
     warmup_iters=16)
-total_epochs =150
-work_dir = './work_dirs/v3-5-scrambmix/'
+total_epochs =500
+work_dir = './work_dirs/a=0.5/'
 find_unused_parameters = True
 omnisource = False
 module_hooks = []

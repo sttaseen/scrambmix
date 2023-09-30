@@ -187,12 +187,13 @@ evaluation = dict(
 optimizer = dict(type='SGD', lr=0.000125, momentum=0.9, weight_decay=0.0001)
 optimizer_config = dict(grad_clip=dict(max_norm=40, norm_type=2))
 lr_config = dict(
-    policy='CosineAnnealing',
-    min_lr=0,
+    policy='step',
+    step=[40, 80],
     warmup='linear',
+    warmup_ratio=0.1,
     warmup_by_epoch=True,
-    warmup_iters=40)
-total_epochs = 180
+    warmup_iters=16)
+total_epochs = 100
 work_dir = './work_dirs/scrambmix/'
 find_unused_parameters = True
 omnisource = False

@@ -25,7 +25,7 @@ model = dict(
 checkpoint_config = dict(interval=5)
 
 # Setup WandB
-log_config = dict(interval=10,
+log_config = dict(interval=2,
                  hooks=[
                         dict(type='TextLoggerHook'),
                         dict(type='WandbLoggerHook',

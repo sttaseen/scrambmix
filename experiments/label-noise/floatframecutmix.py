@@ -12,13 +12,13 @@ model = dict(
         bn_frozen=True),
     cls_head=dict(
         type='I3DHead',
-        num_classes=10,
+        num_classes=174,
         in_channels=2048,
         spatial_type='avg',
         dropout_ratio=0.5,
         init_std=0.01),
     # train_cfg=dict(blending=dict(type='FrameCutMix', num_classes=10, num_frames=32, alpha=1)),
-    train_cfg=dict(blending=dict(type='FloatFrameCutMix', num_classes=10, num_frames=32, alpha=1)),
+    train_cfg=dict(blending=dict(type='FloatFrameCutMix', num_classes=174, num_frames=32, alpha=1)),
     # train_cfg=dict(blending=dict(type='Scrambmix', num_classes=10, num_frames=32, alpha=2)),
     # train_cfg=dict(blending=dict(type='CutmixBlending', num_classes=10, alpha=1)),
     # train_cfg =dict(type='MixupBlending', alpha=0.8, num_classes=10),
@@ -110,7 +110,7 @@ test_pipeline = [
     dict(type='ToTensor', keys=['imgs'])
 ]
 data = dict(
-    videos_per_gpu=32,
+    videos_per_gpu=8,
     workers_per_gpu=4,
     test_dataloader=dict(videos_per_gpu=1),
     val_dataloader=dict(videos_per_gpu=1),

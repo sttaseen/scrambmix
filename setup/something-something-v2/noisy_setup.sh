@@ -15,10 +15,16 @@ unzip something-something-v2.zip -d ./
 
 cd ../..
 
+# Move the subset JSON files and replace the originals
+cp tools/something-something-v2/subset_test_labels.json data/something-something-v2/something-something-v2/test_labels.json
+cp tools/something-something-v2/subset_val_labels.json data/something-something-v2/something-something-v2/val_labels.json
+# cp tools/something-something-v2/subset_train_labels.json data/something-something-v2/something-something-v2/train_labels.json
+cp tools/something-something-v2/noisy_train_labels.json data/something-something-v2/something-something-v2/train_labels.json
+
 # Split the videos
 python tools/something-something-v2/split_videos.py -d data/something-something-v2/something-something-v2
 
-# Extra raw frames
+# Extract raw frames
 python mmaction2/tools/data/build_rawframes.py data/something-something-v2/something-something-v2/test data/something-something-v2/rawframes/test --ext webm --task rgb --level 1 --num-worker $n_workers --out-format jpg --use-opencv
 python mmaction2/tools/data/build_rawframes.py data/something-something-v2/something-something-v2/train data/something-something-v2/rawframes/train --ext webm --task rgb --level 1 --num-worker $n_workers --out-format jpg --use-opencv
 python mmaction2/tools/data/build_rawframes.py data/something-something-v2/something-something-v2/val data/something-something-v2/rawframes/val --ext webm --task rgb --level 1 --num-worker $n_workers --out-format jpg --use-opencv

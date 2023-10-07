@@ -364,3 +364,82 @@ class CutmixBlending(BaseMiniBatchBlending):
         label = lam * label + (1 - lam) * label[rand_index, :]
 
         return imgs, label
+    
+@BLENDINGS.register_module()
+class FloatFrameCutmix(BaseMiniBatchBlending):
+    """Implementing FloatFrameCutMix"""
+
+    def __init__(self, num_classes, num_frames, alpha=.2):
+        super().__init__(num_classes=num_classes)
+        self.num_frames = num_frames
+        self.beta = Beta(alpha, alpha)
+
+    def do_blending(self, imgs, labels, **kwargs):
+        """
+        Blending images with FloatFrameCutMixup.
+
+        """
+        assert len(kwargs) == 0, f'unexpected kwargs for floatframecutmix {kwargs}'
+
+        batch_size = imgs.size(0)
+        rand_index = torch.randperm(batch_size)
+        lam = self.beta.sample()
+
+        sequence_length = round(self.num_frames * lam.item())
+
+        adj = torch.randint(0, 2, (1,)) * 2 - 1  # gives -1 or 1 randomly
+        adj = adj * torch.rand(1) * min(lam, 1.0 - lam)
+        fade = torch.linspace(lam.item() - adj.item(), lam.item() + adj.item(), steps=sequence_length)
+        ones = torch.ones(self.num_frames - sequence_length, dtype=torch.float32)
+        weights = torch.cat((fade, ones)).view(1, self.num_frames, 1, 1)
+
+        A = imgs
+        B = A.clone()[rand_index, ...]
+        A = A * weights
+        B = B * (1 - weights)
+
+        mixed_imgs = A + B
+
+        label_ratio = (torch.sum(weights).item()) / self.num_frames
+        label = label_ratio * labels + (1 - label_ratio) * labels[rand_index, :]
+
+        return mixed_imgs, label
+
+
+@BLENDINGS.register_module()
+class FrameCutmix(BaseMiniBatchBlending):
+    """Implementing FrameCutMix"""
+
+    def __init__(self, num_classes, num_frames, alpha=.2):
+        super().__init__(num_classes=num_classes)
+        self.num_frames = num_frames
+        self.beta = Beta(alpha, alpha)
+
+    def do_blending(self, imgs, labels, **kwargs):
+        """
+        Blending images with FloatFrameCutMixup.
+
+        """
+        assert len(kwargs) == 0, f'unexpected kwargs for floatframecutmix {kwargs}'
+
+        batch_size = imgs.size(0)
+        rand_index = torch.randperm(batch_size)
+        lam = self.beta.sample()
+
+        sequence_length = round(self.num_frames * lam.item())
+
+        mixup_ratio = torch.full((sequence_length,), lam)
+        ones = torch.ones(self.num_frames - sequence_length, dtype=torch.float32)
+        weights = torch.cat((mixup_ratio, ones)).view(1, self.num_frames, 1, 1)
+
+        A = imgs
+        B = A.clone()[rand_index, ...]
+        A = A * weights
+        B = B * (1 - weights)
+
+        mixed_imgs = A + B
+
+        label_ratio = (torch.sum(weights).item()) / self.num_frames
+        label = label_ratio * labels + (1 - label_ratio) * labels[rand_index, :]
+
+        return mixed_imgs, label

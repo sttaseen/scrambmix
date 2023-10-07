@@ -17,7 +17,9 @@ model = dict(
         spatial_type='avg',
         dropout_ratio=0.5,
         init_std=0.01),
-    train_cfg=dict(blending=dict(type='Scrambmix', num_classes=10, num_frames=32, alpha=2)),
+    train_cfg=dict(blending=dict(type='FrameCutMix', num_classes=10, num_frames=32, alpha=1)),
+    # train_cfg=dict(blending=dict(type='FloatFrameCutMix', num_classes=10, num_frames=32, alpha=1)),
+    # train_cfg=dict(blending=dict(type='Scrambmix', num_classes=10, num_frames=32, alpha=2)),
     # train_cfg=dict(blending=dict(type='CutmixBlending', num_classes=10, alpha=1)),
     # train_cfg =dict(type='MixupBlending', alpha=0.8, num_classes=10),
     # train_cfg = None,
@@ -32,7 +34,7 @@ log_config = dict(interval=10,
                         init_kwargs={
                          'entity': "cares",
                          'project': "label-noise",
-                         'group': 'scrambmix'
+                         'group': 'framecutmix'
                         },
                         log_artifact=True)
 ])
@@ -194,7 +196,7 @@ lr_config = dict(
     warmup_by_epoch=True,
     warmup_iters=16)
 total_epochs = 58
-work_dir = './work_dirs/scrambmix/'
+work_dir = './work_dirs/framecutmix/'
 find_unused_parameters = True
 omnisource = False
 module_hooks = []

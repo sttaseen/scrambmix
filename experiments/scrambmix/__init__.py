@@ -24,5 +24,6 @@ __all__ = [
     'HVUDataset', 'AudioDataset', 'AudioFeatureDataset', 'ImageDataset',
     'RawVideoDataset', 'AVADataset', 'AudioVisualDataset',
     'BaseMiniBatchBlending', 'CutmixBlending', 'MixupBlending', 'DATASETS',
-    'PIPELINES', 'BLENDINGS', 'PoseDataset', 'ConcatDataset', 'Scrambmix', 'Scrambmix_v3', 'FloatFrameCutmix', 'FrameCutmix'
+    'PIPELINES', 'BLENDINGS', 'PoseDataset', 'ConcatDataset', 'Scrambmix',
+    'FloatFrameCutmix', 'FrameCutmix'
 ]

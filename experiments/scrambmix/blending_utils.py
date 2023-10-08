@@ -391,7 +391,7 @@ class FloatFrameCutmix(BaseMiniBatchBlending):
         adj = adj * torch.rand(1) * min(lam, 1.0 - lam)
         fade = torch.linspace(lam.item() - adj.item(), lam.item() + adj.item(), steps=sequence_length)
         ones = torch.ones(self.num_frames - sequence_length, dtype=torch.float32)
-        weights = torch.cat((fade, ones)).view(1, self.num_frames, 1, 1)
+        weights = torch.cat((fade, ones)).view(1, self.num_frames, 1, 1).to('cuda')
 
         A = imgs
         B = A.clone()[rand_index, ...]

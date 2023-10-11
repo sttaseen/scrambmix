@@ -28,6 +28,6 @@ The result should like this:
 | Baseline           | 71.37     | 91.9      | 71.37          |
 | MixUp              | 69.35     | 91.05     | 69.35          |
 | CutMix             | 68.82     | 90.72     | 68.82          |
-| ScrambMix (ours)   | 72.22     | 92.55     | 72.22          |
+| ScrambMix          | 72.22     | 92.55     | 72.22          |
 | FloatFrameCutMix   |           |           |                |
 | FrameCutMix        |           |           |                |

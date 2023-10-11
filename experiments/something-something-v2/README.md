@@ -23,7 +23,7 @@ python mmaction2/tools/train.py experiments/something-something-v2/mixup.py --va
 # Result
 The result should like this:
 
-| Group      | Top-1 (%) | Top-5 (%) | Mean Class (%) |
+| Augment      | Top-1 (%) | Top-5 (%) | Mean Class (%) |
 |----------- |------------|-----------|----------------|
 | baseline           | 56.62      | 85.45     | 50.05          |
 | mixup              | 53.49      | 82.84     | 46.27          |

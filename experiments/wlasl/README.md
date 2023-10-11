@@ -1,6 +1,6 @@
 # Introduction
 
-This experiment is used for training the model on the <strong> wlasl </strong> dataset using data augmentation methods (**mixup,cutmix,scrambmix** ) and comparing to baseline. 
+This experiment is used for training the model on the <strong> wlasl </strong> dataset using data augmentation methods (**mixup,cutmix,scrambmix,FloatFrameCutMix,FrameCutMix** ) and comparing to baseline. 
 # Steps to follow
 
 1. Download and set the  <strong> wlasl </strong> data set by navigating to ```setup/wlasl``` and following the README.
@@ -23,7 +23,7 @@ python mmaction2/tools/train.py experiments/wlasl/scrambmix.py --validate --dete
 # Result
 The result should like this:
 
-| Group              | Top-1 (%) | Top-5 (%) | Mean Class (%) |
+| Augment              | Top-1 (%) | Top-5 (%) | Mean Class (%) |
 |--------------------|-----------|-----------|----------------|
 | Baseline           | 80.23     | 93.8      | 79.83          |
 | MixUp              | 79.46     | 93.41     | 78.92          |

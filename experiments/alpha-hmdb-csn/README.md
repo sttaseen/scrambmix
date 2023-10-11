@@ -18,9 +18,9 @@ bash automate2.sh
 # Result
 The result should like this:
 
-Model	<strong> CSN-50 </strong>	
+Model:	<strong> CSN-50 </strong>	
 
-Baseline	<strong> Top-1(%) : </strong> 76.14	  <strong> Top-5 (%) : </strong> 93.66
+Baseline:	<strong> Top-1(%) : </strong> 76.14	  <strong> Top-5 (%) : </strong> 93.66
 
 Grid Search result:
 

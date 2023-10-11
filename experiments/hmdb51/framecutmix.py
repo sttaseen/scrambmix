@@ -17,7 +17,7 @@ model = dict(
         spatial_type='avg',
         dropout_ratio=0.5,
         init_std=0.01),
-    train_cfg=dict(blending=dict(type='FrameCutMix', num_classes=52, num_frames=32, alpha=1)),
+    train_cfg=dict(blending=dict(type='FrameCutmix', num_classes=52, num_frames=32, alpha=1)),
     # train_cfg=dict(blending=dict(type='FloatFrameCutmix', num_classes=52, num_frames=32, alpha=1)),
     # train_cfg=dict(blending=dict(type='Scrambmix', num_classes=52, num_frames=32, alpha=2)),
     # train_cfg=dict(blending=dict(type='CutmixBlending', num_classes=52, alpha=1)),

@@ -7,14 +7,27 @@ This experiment is used for training the <strong> CSN </strong> model on the <st
 2. For the <strong> baseline </strong> and different <strong> alpha </strong> values, execute the following commands in sequence:
 
 ```
-bash automate.sh
+python mmaction2/tools/train.py experiments/alpha/baseline.py --validate --deterministic --seed 0
 ```
 ```
-bash automate1.sh
+python mmaction2/tools/train.py experiments/alpha/alpha=0.1.py --validate --deterministic --seed 0
 ```
 ```
-bash automate2.sh
+python mmaction2/tools/train.py experiments/alpha/alpha=0.25.py --validate --deterministic --seed 0
 ```
+```
+python mmaction2/tools/train.py experiments/alpha/alpha=0.5.py --validate --deterministic --seed 0
+```
+```
+python mmaction2/tools/train.py experiments/alpha/alpha=1.py --validate --deterministic --seed 0
+```
+```
+python mmaction2/tools/train.py experiments/alpha/alpha=2.py --validate --deterministic --seed 0
+```
+```
+python mmaction2/tools/train.py experiments/alpha/alpha=4.py --validate --deterministic --seed 0
+```
+
 # Result
 The result should like this:
 

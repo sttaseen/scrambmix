@@ -23,10 +23,10 @@ python mmaction2/tools/train.py experiments/something-something-v2/mixup.py --va
 # Result
 The result should like this:
 
-| Group     | val/top1_acc | val/top5_acc   | val/mean_class_accuracy |
-|-----------|--------------|----------------|--------------------------|
-| mixup     | 0.5349265383 | 0.8284051994   | 0.4626973437             |
-| cutmix    | 0.5730014361 | 0.8562801488   | 0.5030298959             |
-| scrambmix | 0.56707295   | 0.85083036     | 0.4987165364             |
-| baseline  | 0.5661523732 | 0.8545126487   | 0.5004892057             |
+| Group      | Top-1 (%) | Top-5 (%) | Mean Class (%) |
+|-----------|------------|-----------|----------------|
+| mixup     | 53.49      | 82.84     | 46.27          |
+| cutmix    | 57.30      | 85.63     | 50.30          |
+| scrambmix | 56.71      | 85.08     | 49.87          |
+| baseline  | 56.62      | 85.45     | 50.05          |
 

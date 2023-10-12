@@ -65,8 +65,8 @@ class Normalise:
         c, h, w = img_array[0].shape
         img_ = np.empty((n, c, h, w), dtype=np.float32)
 
-        for i, img in enumerate(img_array):
-            img_[i] = self.normalise(img)
+        # for i, img in enumerate(img_array):
+            # img_[i] = self.normalise(img)
             # img_[i] = mmcv.imnormalize_(img, self.mean, self.std, False)
 
         out = torch.tensor(img_)
@@ -695,91 +695,94 @@ class MultiModalDataset(Dataset):
         if 'flow' in self.modalities:
             flow = self.to_3dtensor(results['flow']).squeeze()
         else:
-            flow = torch.FloatTensor(3,32,self.input_resolution,self.input_resolution)
+            if len(self.input_resolution) == 1:
+                flow = torch.FloatTensor(3,32,self.input_resolution,self.input_resolution)
+            else:
+                flow = torch.FloatTensor(3,32,self.input_resolution[0],self.input_resolution[1])
 
-        if 'depth' in self.modalities:
-            depth = self.to_3dtensor(results['depth'])
-            # Since depth is only 1 channel copy it over 3 times
-            depth = torch.cat((depth, depth, depth), dim=0)
-        else:
-            depth = torch.FloatTensor(3,32,self.input_resolution,self.input_resolution)
+        # if 'depth' in self.modalities:
+        #     depth = self.to_3dtensor(results['depth'])
+        #     # Since depth is only 1 channel copy it over 3 times
+        #     depth = torch.cat((depth, depth, depth), dim=0)
+        # else:
+        #     depth = torch.FloatTensor(3,32,self.input_resolution,self.input_resolution)
 
-        if 'face' in self.modalities:
-            face = self.to_3dtensor(results['face']).squeeze()
-        else:
-            face = torch.FloatTensor(3,32,self.resolution,self.resolution)
+        # if 'face' in self.modalities:
+        #     face = self.to_3dtensor(results['face']).squeeze()
+        # else:
+        #     face = torch.FloatTensor(3,32,self.resolution,self.resolution)
 
-        if 'left_hand' in self.modalities:
-            left_hand = self.to_3dtensor(results['left_hand']).squeeze()
-        else:
-            left_hand = torch.FloatTensor(3,32,self.resolution,self.resolution)
+        # if 'left_hand' in self.modalities:
+        #     left_hand = self.to_3dtensor(results['left_hand']).squeeze()
+        # else:
+        #     left_hand = torch.FloatTensor(3,32,self.resolution,self.resolution)
 
-        if 'right_hand' in self.modalities:
-            right_hand = self.to_3dtensor(results['right_hand']).squeeze()
-        else:
-            right_hand = torch.FloatTensor(3,32,self.resolution,self.resolution)
+        # if 'right_hand' in self.modalities:
+        #     right_hand = self.to_3dtensor(results['right_hand']).squeeze()
+        # else:
+        #     right_hand = torch.FloatTensor(3,32,self.resolution,self.resolution)
 
-        if 'skeleton' in self.modalities:
-            skeleton = self.to_3dtensor(results['skeleton']).squeeze()
-        else:
-            skeleton = torch.FloatTensor(3,32,self.resolution,self.resolution)
+        # if 'skeleton' in self.modalities:
+        #     skeleton = self.to_3dtensor(results['skeleton']).squeeze()
+        # else:
+        #     skeleton = torch.FloatTensor(3,32,self.resolution,self.resolution)
 
 
         modality_list.append(rgb)
         modality_list.append(flow)
-        modality_list.append(depth)
+        # modality_list.append(depth)
 
 
         combined_tensor = torch.cat(modality_list, dim=1)
 
-        # Do split based crops
-        if self.test_mode:
-            combined_tensor = self.test_transform(combined_tensor)
-        else:
-            combined_tensor = self.train_transform(combined_tensor)
+        # # Do split based crops
+        # if self.test_mode:
+        #     combined_tensor = self.test_transform(combined_tensor)
+        # else:
+        #     combined_tensor = self.train_transform(combined_tensor)
     
-        # Don't need crops for face, the hands and skeleton
-        combined_tensor = torch.cat([combined_tensor, face], dim=1)
-        combined_tensor = torch.cat([combined_tensor, left_hand], dim=1)
-        combined_tensor = torch.cat([combined_tensor, right_hand], dim=1)
-        combined_tensor = torch.cat([combined_tensor, skeleton], dim=1)
+        # # Don't need crops for face, the hands and skeleton
+        # combined_tensor = torch.cat([combined_tensor, face], dim=1)
+        # combined_tensor = torch.cat([combined_tensor, left_hand], dim=1)
+        # combined_tensor = torch.cat([combined_tensor, right_hand], dim=1)
+        # combined_tensor = torch.cat([combined_tensor, skeleton], dim=1)
 
         
     
         if 'rgb' in self.modalities:
             rgb = combined_tensor[:, 0:32, :, :]
-            rgb = self.normalise(rgb)
+            # rgb = self.normalise(rgb)
             output['rgb'] = rgb
 
         if 'flow' in self.modalities:
             flow = combined_tensor[:, 32:64, :, :]
-            flow = self.flow_normalise(flow)
+            # flow = self.flow_normalise(flow)
             output['flow'] = flow
 
-        if 'depth' in self.modalities:
-            depth = combined_tensor[:, 64:96, :, :]
-            depth = self.depth_normalise(depth)
-            output['depth'] = depth
+        # if 'depth' in self.modalities:
+        #     depth = combined_tensor[:, 64:96, :, :]
+        #     depth = self.depth_normalise(depth)
+        #     output['depth'] = depth
 
-        if 'face' in self.modalities:
-            face = combined_tensor[:, 96:128, :, :]
-            face = self.normalise(face)
-            output['face'] = face
+        # if 'face' in self.modalities:
+        #     face = combined_tensor[:, 96:128, :, :]
+        #     face = self.normalise(face)
+        #     output['face'] = face
 
-        if 'left_hand' in self.modalities:
-            left_hand = combined_tensor[:, 128:160, :, :]
-            left_hand = self.normalise(left_hand)
-            output['left_hand'] = left_hand
+        # if 'left_hand' in self.modalities:
+        #     left_hand = combined_tensor[:, 128:160, :, :]
+        #     left_hand = self.normalise(left_hand)
+        #     output['left_hand'] = left_hand
 
-        if 'right_hand' in self.modalities:
-            right_hand = combined_tensor[:, 160:192, :, :]
-            right_hand = self.normalise(right_hand)
-            output['right_hand'] = right_hand
+        # if 'right_hand' in self.modalities:
+        #     right_hand = combined_tensor[:, 160:192, :, :]
+        #     right_hand = self.normalise(right_hand)
+        #     output['right_hand'] = right_hand
 
-        if 'skeleton' in self.modalities:
-            skeleton = combined_tensor[:, 192:224, :, :]
-            skeleton = self.normalise(skeleton)
-            output['skeleton'] = skeleton
+        # if 'skeleton' in self.modalities:
+        #     skeleton = combined_tensor[:, 192:224, :, :]
+        #     skeleton = self.normalise(skeleton)
+        #     output['skeleton'] = skeleton
 
         label = torch.tensor(results['label'])
         output['label'] = label

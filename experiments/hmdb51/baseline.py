@@ -30,8 +30,8 @@ log_config = dict(interval=10,
                         dict(type='TextLoggerHook'),
                         dict(type='WandbLoggerHook',
                         init_kwargs={
-                         'entity': "760-p6",
-                         'project': "hmdb51",
+                         'entity': "cares",
+                         'project': "hmdb51-repeat",
                          'group': 'baseline'
                         },
                         log_artifact=True)

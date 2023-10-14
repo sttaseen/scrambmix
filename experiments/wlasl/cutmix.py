@@ -30,8 +30,8 @@ log_config = dict(interval=10,
                         dict(type='TextLoggerHook'),
                         dict(type='WandbLoggerHook',
                         init_kwargs={
-                         'entity': "760-p6",
-                         'project': "wlasl",
+                         'entity': "cares",
+                         'project': "wlasl-repeat",
                          'group': 'cutmix'
                         },
                         log_artifact=True)

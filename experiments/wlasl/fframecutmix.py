@@ -35,7 +35,7 @@ log_config = dict(interval=10,
                         dict(type='WandbLoggerHook',
                         init_kwargs={
                          'entity': "cares",
-                         'project': "wlasl-loose-ends",
+                         'project': "wlasl-repeat",
                          'group': 'floatframeCutmix'
                         },
                         log_artifact=True)

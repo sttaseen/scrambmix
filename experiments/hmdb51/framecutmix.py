@@ -35,7 +35,7 @@ log_config = dict(interval=10,
                         dict(type='WandbLoggerHook',
                         init_kwargs={
                          'entity': "cares",
-                         'project': "hmdb-loose-ends",
+                         'project': "hmdb-repeat",
                          'group': 'frameCutmix'
                         },
                         log_artifact=True)

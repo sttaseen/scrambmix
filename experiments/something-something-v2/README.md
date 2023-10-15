@@ -32,3 +32,4 @@ The result should like this:
 | FloatFrameCutMix   |           |           |                |
 | FrameCutMix        |           |           |                |
 
+Running time : 2d 22h (each) with A100 and batch size 32

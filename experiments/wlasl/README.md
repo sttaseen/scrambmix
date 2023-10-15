@@ -29,5 +29,7 @@ The result should like this:
 | Mixup              | 79.46     | 93.41     | 78.92          |
 | CutMix             | 82.56     | 94.19     | 82.42          |
 | ScrambMix          | 83.42     | 94.57     | 83.72          |
-| FloatFrameCutMix   |           |           |                |
-| FrameCutMix        |           |           |                |
+| FloatFrameCutMix   | 82.17     | 95.74     | 82.13          |
+| FrameCutMix        | 82.95     | 94.96     |  82.92         |
+
+Running time : 2h 56m (each) with RTX 4090

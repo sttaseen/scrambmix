@@ -39,3 +39,4 @@ The result should like this:
 | 2     | 0.8372    | 0.9457    | 0.8342         |
 | 4     | 0.8217    | 0.9535    | 0.8208         |
 
+Running time : 2h 56m(each) with RTX 4090

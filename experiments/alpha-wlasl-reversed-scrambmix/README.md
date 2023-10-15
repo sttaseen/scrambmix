@@ -38,3 +38,5 @@ The result should like this:
 | 0.5  | 55.81    | 84.11    | 55.67      |
 | 0.25 | 51.16    | 81.01    | 50.63      |
 | 0.1  | 48.06    | 75.58    | 47.80      |
+
+Running time : 2h 56m(each) with RTX 4090

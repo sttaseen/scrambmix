@@ -151,6 +151,12 @@ CC=clang CXX=clang++ CFLAGS='-stdlib=libc++' pip install -e .
 cd ..
 ```
 
+To set up our custom data augments, head over to `experiments/scrambmix` and run `copy_blend.sh`. This will copy the scrambmix augment over to MMAction2:
+```
+cd experiments/scrambmix
+bash copy_blend.sh
+```
+
 This one is optional but to use the conda environment in Notebook, run:
 ```
 conda install ipykernel -y

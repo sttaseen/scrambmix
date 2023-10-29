@@ -154,6 +154,7 @@ class Scrambmix(BaseMiniBatchBlending):
             A = self.fade_out * A
             B = self.fade_in * B
 
+
         # Calculate the areas
         bbox_area = (bby2-bby1) * (bbx2-bbx1)
         w = imgs.size(-1)

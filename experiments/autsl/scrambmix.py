@@ -36,7 +36,7 @@ log_config = dict(interval=10,
                         init_kwargs={
                          'entity': "cares",
                          'project': "autsl-loose-ends",
-                         'group': 'scrambmix-a=2'
+                         'group': 'scrambmix-v4'
                         },
                         log_artifact=True)
 ])

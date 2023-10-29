@@ -86,9 +86,87 @@ class MixupBlending(BaseMiniBatchBlending):
         mixed_label = lam * label + (1 - lam) * label[rand_index, :]
 
         return mixed_imgs, mixed_label
-
+    
 @BLENDINGS.register_module()
 class Scrambmix(BaseMiniBatchBlending):
+    """Implementing Scrambmix in a mini-batch.
+
+    Args:
+        num_classes (int): The number of classes.
+        num_frames (int): The number of frames.
+        alpha (float): Parameters for Beta Binomial distribution.
+    """
+
+    def __init__(self, num_classes, num_frames, alpha=5):
+        super().__init__(num_classes=num_classes)
+        self.num_frames = num_frames
+        self.fade_in = torch.linspace(0, 1, self.num_frames).view(1, 1, 1, 32, 1, 1)
+        self.fade_out = 1 - self.fade_in
+        self.beta_binom = stats.betabinom(num_frames-1, alpha, alpha, loc=0)
+        
+    def rand_bbox(self, img_size, lam):
+        """Generate a random boudning box."""
+        w = img_size[-1]
+        h = img_size[-2]
+        cut_rat = torch.sqrt(1. - lam)
+        cut_w = torch.tensor(int(w * cut_rat))
+        cut_h = torch.tensor(int(h * cut_rat))
+
+        # This is uniform
+        cx = torch.randint(w, (1, ))[0]
+        cy = torch.randint(h, (1, ))[0]
+
+        bbx1 = torch.clamp(cx - cut_w // 2, 0, w)
+        bby1 = torch.clamp(cy - cut_h // 2, 0, h)
+        bbx2 = torch.clamp(cx + cut_w // 2, 0, w)
+        bby2 = torch.clamp(cy + cut_h // 2, 0, h)
+
+        return bbx1, bby1, bbx2, bby2
+
+    def do_blending(self, imgs, label, **kwargs):
+        """Blending images with scrambmix."""
+
+        assert len(kwargs) == 0, f'unexpected kwargs for mixup {kwargs}'
+
+        batch_size = imgs.size(0)
+        
+        epsilon = self.beta_binom.rvs() + 1
+        interval = round(self.num_frames/epsilon)
+        rand_index = torch.randperm(batch_size)
+
+        mask = torch.arange(self.num_frames) % interval == 0
+        lam = mask.sum()/self.num_frames
+        bbx1, bby1, bbx2, bby2 = self.rand_bbox(imgs.size(), lam)
+
+        A = imgs
+        B = A.clone()[rand_index, ...]
+        
+        # Apply the masks
+        A[..., ~mask, bby1:bby2, bbx1:bbx2], B[..., mask, bby1:bby2, bbx1:bbx2] = \
+            B[..., ~mask, bby1:bby2, bbx1:bbx2], A[..., mask, bby1:bby2, bbx1:bbx2]
+        
+        # Apply the fades
+        A = self.fade_in * A
+        B = self.fade_out * B
+
+        # Calculate the areas
+        bbox_area = (bby2-bby1) * (bbx2-bbx1)
+        w = imgs.size(-1)
+        h = imgs.size(-2)
+        total_area = w*h
+
+        # Proportion of frame occupied by the bounding box
+        theta = bbox_area/total_area
+        
+        # MixUp the frames and encodings
+        mixed_imgs = A + B
+        mixed_label = lam * theta * label + (1 - lam) * theta * label[rand_index, :] + \
+            lam * (1-theta) * label[rand_index, :] + (1-lam) * (1-theta) * label
+
+        return mixed_imgs, mixed_label
+
+@BLENDINGS.register_module()
+class Scrambmix_v3(BaseMiniBatchBlending):
     """Implementing Scrambmix in a mini-batch.
 
     Args:

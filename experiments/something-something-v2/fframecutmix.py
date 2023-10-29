@@ -3,13 +3,13 @@ model = dict(
     backbone=dict(
         type='ResNet3dCSN',
         pretrained2d=False,
-        pretrained='QCYiz.pth', # Baseline checkpoint
-        depth=50,
+        pretrained='https://download.openmmlab.com/mmaction/recognition/csn/ircsn_from_scratch_r152_ig65m_20200807-771c4135.pth',
+        depth=152,
         with_pool2=False,
         bottleneck_mode='ir',
         norm_eval=True,
-        zero_init_residual=False,
-        bn_frozen=True),
+        bn_frozen=True,
+        zero_init_residual=False),
     cls_head=dict(
         type='I3DHead',
         num_classes=174,
@@ -17,6 +17,7 @@ model = dict(
         spatial_type='avg',
         dropout_ratio=0.5,
         init_std=0.01),
+    # model training and testing settings
     # train_cfg=dict(blending=dict(type='FrameCutMix', num_classes=174, num_frames=32, alpha=1)),
     train_cfg=dict(blending=dict(type='FloatFrameCutmix', num_classes=174, num_frames=32, alpha=1)),
     # train_cfg=dict(blending=dict(type='Scrambmix', num_classes=174, num_frames=32, alpha=2)),
@@ -24,16 +25,44 @@ model = dict(
     # train_cfg =dict(type='MixupBlending', alpha=0.8, num_classes=174),
     # train_cfg = None,
     test_cfg=dict(average_clips='prob', max_testing_views=10))
+
+# model = dict(
+#     type='Recognizer3D',
+#     backbone=dict(
+#         type='ResNet3dCSN',
+#         pretrained2d=False,
+#         pretrained='QCYiz.pth', # Baseline checkpoint
+#         depth=50,
+#         with_pool2=False,
+#         bottleneck_mode='ir',
+#         norm_eval=True,
+#         zero_init_residual=False,
+#         bn_frozen=True),
+#     cls_head=dict(
+#         type='I3DHead',
+#         num_classes=174,
+#         in_channels=2048,
+#         spatial_type='avg',
+#         dropout_ratio=0.5,
+#         init_std=0.01),
+#     # train_cfg=dict(blending=dict(type='FrameCutMix', num_classes=174, num_frames=32, alpha=1)),
+#     train_cfg=dict(blending=dict(type='FloatFrameCutmix', num_classes=174, num_frames=32, alpha=1)),
+#     # train_cfg=dict(blending=dict(type='Scrambmix', num_classes=174, num_frames=32, alpha=2)),
+#     # train_cfg=dict(blending=dict(type='CutmixBlending', num_classes=174, alpha=1)),
+#     # train_cfg =dict(type='MixupBlending', alpha=0.8, num_classes=174),
+#     # train_cfg = None,
+#     test_cfg=dict(average_clips='prob', max_testing_views=10))
+
 checkpoint_config = dict(interval=5)
 
 # Setup WandB
-log_config = dict(interval=1,
+log_config = dict(interval=10,
                  hooks=[
                         dict(type='TextLoggerHook'),
                         dict(type='WandbLoggerHook',
                         init_kwargs={
                          'entity': "cares",
-                         'project': "something-something-v2",
+                         'project': "ssv2-csn152",
                          'group': 'fframecutmix'
                         },
                         log_artifact=True)
@@ -110,7 +139,7 @@ test_pipeline = [
     dict(type='ToTensor', keys=['imgs'])
 ]
 data = dict(
-    videos_per_gpu=32,
+    videos_per_gpu=8,
     workers_per_gpu=4,
     test_dataloader=dict(videos_per_gpu=1),
     val_dataloader=dict(videos_per_gpu=1),
@@ -185,7 +214,7 @@ data = dict(
             dict(type='ToTensor', keys=['imgs'])
         ]))
 evaluation = dict(
-    interval=5, metrics=['top_k_accuracy', 'mean_class_accuracy'])
+    interval=2, metrics=['top_k_accuracy', 'mean_class_accuracy'])
 optimizer = dict(type='SGD', lr=0.000125, momentum=0.9, weight_decay=0.0001)
 optimizer_config = dict(grad_clip=dict(max_norm=40, norm_type=2))
 lr_config = dict(

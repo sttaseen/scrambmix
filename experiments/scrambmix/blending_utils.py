@@ -130,6 +130,7 @@ class Scrambmix(BaseMiniBatchBlending):
         assert len(kwargs) == 0, f'unexpected kwargs for mixup {kwargs}'
 
         batch_size = imgs.size(0)
+        device = imgs.device
         
         epsilon = self.beta_binom.rvs() + 1
         interval = round(self.num_frames/epsilon)
@@ -147,12 +148,12 @@ class Scrambmix(BaseMiniBatchBlending):
             B[..., ~mask, bby1:bby2, bbx1:bbx2], A[..., mask, bby1:bby2, bbx1:bbx2]
         
         # Apply the fades
-        if random.random > 0.5:
-            A = self.fade_in * A
-            B = self.fade_out * B
+        if random.random() > 0.5:
+            A = self.fade_in.to(device) * A
+            B = self.fade_out.to(device) * B
         else:
-            A = self.fade_out * A
-            B = self.fade_in * B
+            A = self.fade_out.to(device) * A
+            B = self.fade_in.to(device) * B
 
 
         # Calculate the areas

@@ -31,7 +31,7 @@ log_config = dict(interval=10,
                         dict(type='WandbLoggerHook',
                         init_kwargs={
                          'entity': "cares",
-                         'project': "hmdb51-repeat",
+                         'project': "hmdb51-tuning",
                          'group': 'baseline'
                         },
                         log_artifact=True)
@@ -183,7 +183,7 @@ data = dict(
             dict(type='ToTensor', keys=['imgs'])
         ]))
 evaluation = dict(
-    interval=5, metrics=['top_k_accuracy', 'mean_class_accuracy'])
+    interval=5, metrics=['top_k_accuracy', 'mean_class_accuracy', 'mean_average_precision'])
 optimizer = dict(type='SGD', lr=0.000125, momentum=0.9, weight_decay=0.0001)
 optimizer_config = dict(grad_clip=dict(max_norm=40, norm_type=2))
 lr_config = dict(

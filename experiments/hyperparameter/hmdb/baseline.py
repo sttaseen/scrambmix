@@ -3,19 +3,19 @@ model = dict(
     backbone=dict(
         type='ResNet3dCSN',
         pretrained2d=False,
-        pretrained='trimmed.pth',
+        pretrained='https://download.openmmlab.com/mmaction/recognition/csn/ircsn_from_scratch_r50_ig65m_20210617-ce545a37.pth',
         depth=50,
         with_pool2=False,
         bottleneck_mode='ir',
         norm_eval=True,
         zero_init_residual=False,
-        bn_frozen=True),
+        bn_frozen=False),
     cls_head=dict(
         type='I3DHead',
         num_classes=52,
         in_channels=2048,
         spatial_type='avg',
-        dropout_ratio=0.5,
+        dropout_ratio=0.53,
         init_std=0.01),
     # train_cfg=dict(blending=dict(type='Scrambmix', num_classes=52, num_frames=32, alpha=5)),
     # train_cfg=dict(blending=dict(type='CutmixBlending', num_classes=52, alpha=1)),
@@ -184,13 +184,13 @@ data = dict(
         ]))
 evaluation = dict(
     interval=5, metrics=['top_k_accuracy', 'mean_class_accuracy', 'mean_average_precision'])
-optimizer = dict(type='SGD', lr=0.000125, momentum=0.9, weight_decay=0.0001)
-optimizer_config = dict(grad_clip=dict(max_norm=40, norm_type=2))
+optimizer = dict(type='SGD', lr=0.00042, momentum=0.9, weight_decay=0.0001)
+optimizer_config = dict(grad_clip=dict(max_norm=10, norm_type=2))
 lr_config = dict(
     policy='step',
     step=[70, 140],
     warmup='linear',
-    warmup_ratio=0.1,
+    warmup_ratio=0.2,
     warmup_by_epoch=True,
     warmup_iters=16)
 total_epochs =150

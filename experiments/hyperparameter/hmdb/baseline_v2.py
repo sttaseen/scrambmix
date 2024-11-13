@@ -15,7 +15,7 @@ model = dict(
         num_classes=52,
         in_channels=2048,
         spatial_type='avg',
-        dropout_ratio=0.53,
+        dropout_ratio=0.5,
         init_std=0.01),
     # train_cfg=dict(blending=dict(type='Scrambmix', num_classes=52, num_frames=32, alpha=5)),
     # train_cfg=dict(blending=dict(type='CutmixBlending', num_classes=52, alpha=1)),
@@ -183,8 +183,9 @@ data = dict(
             dict(type='ToTensor', keys=['imgs'])
         ]))
 evaluation = dict(
-    interval=2, metrics=['top_k_accuracy', 'mean_class_accuracy'])
-    
+    interval=1, metrics=['top_k_accuracy', 'mean_class_accuracy'])
+
+"""v1"""
 # optimizer = dict(type='SGD', lr=0.00042, momentum=0.9, weight_decay=0.0001)
 # optimizer_config = dict(grad_clip=dict(max_norm=10, norm_type=2))
 
@@ -196,18 +197,39 @@ evaluation = dict(
 #     warmup_by_epoch=True,
 #     warmup_iters=16)
 
-# optimizer
-optimizer = dict(
-    type='Adam', lr=0.01, weight_decay=0.00001)  # this lr is used for 1 gpus
+# total_epochs = 50
+
+# """v2"""
+# # optimizer
+# optimizer = dict(
+#     type='Adam', lr=0.01, weight_decay=0.00001)  # this lr is used for 1 gpus
+# optimizer_config = dict(grad_clip=dict(max_norm=40, norm_type=2))
+
+
+# """v3"""
+# # optimizer
+# optimizer = dict(
+#     type='Adam', lr=0.001, weight_decay=0.00001)  # this lr is used for 1 gpus
+# optimizer_config = dict(grad_clip=dict(max_norm=40, norm_type=2))
+
+# """v4"""
+# # Batch norm frozen = True
+# # optimizer
+# optimizer = dict(
+#     type='Adam', lr=0.001, weight_decay=0.00001)  # this lr is used for 1 gpus
+# optimizer_config = dict(grad_clip=dict(max_norm=40, norm_type=2))
+
+# # """v5"""
+# optimizer = dict(type='Adam', lr=0.0001, weight_decay=0.00001)
+# optimizer_config = dict(grad_clip=dict(max_norm=10, norm_type=2))
+
+# """v6"""
+optimizer = dict(type='Adam', lr=1e-6, weight_decay=0.00001)
 optimizer_config = dict(grad_clip=dict(max_norm=10, norm_type=2))
 
 # learning policy
 lr_config = dict(policy='step', step=10)
-total_epochs = 30 # Train for more to see if it converges
-
-# total_epochs = 20
-
-# total_epochs = 50
+total_epochs = 30 # Train for more to see if it converges (Originally, this was 20e)
 
 work_dir = './work_dirs/v3-5-scrambmix/'
 find_unused_parameters = True

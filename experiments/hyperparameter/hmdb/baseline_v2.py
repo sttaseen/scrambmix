@@ -183,7 +183,7 @@ data = dict(
             dict(type='ToTensor', keys=['imgs'])
         ]))
 evaluation = dict(
-    interval=5, metrics=['top_k_accuracy', 'mean_class_accuracy'])
+    interval=2, metrics=['top_k_accuracy', 'mean_class_accuracy'])
     
 # optimizer = dict(type='SGD', lr=0.00042, momentum=0.9, weight_decay=0.0001)
 # optimizer_config = dict(grad_clip=dict(max_norm=10, norm_type=2))
@@ -203,7 +203,9 @@ optimizer_config = dict(grad_clip=None)
 
 # learning policy
 lr_config = dict(policy='step', step=10)
-total_epochs = 20
+total_epochs = 30 # Train for more to see if it converges
+
+# total_epochs = 20
 
 # total_epochs = 50
 

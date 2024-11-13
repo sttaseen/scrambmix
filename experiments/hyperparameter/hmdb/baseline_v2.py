@@ -199,7 +199,7 @@ evaluation = dict(
 # optimizer
 optimizer = dict(
     type='Adam', lr=0.01, weight_decay=0.00001)  # this lr is used for 1 gpus
-optimizer_config = dict(grad_clip=None)
+optimizer_config = dict(grad_clip=dict(max_norm=10, norm_type=2))
 
 # learning policy
 lr_config = dict(policy='step', step=10)

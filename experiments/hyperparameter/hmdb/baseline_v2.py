@@ -223,13 +223,29 @@ evaluation = dict(
 # optimizer = dict(type='Adam', lr=0.0001, weight_decay=0.00001)
 # optimizer_config = dict(grad_clip=dict(max_norm=10, norm_type=2))
 
-# """v6"""
+# # """v6"""
+# optimizer = dict(type='Adam', lr=1e-6, weight_decay=0.00001)
+# optimizer_config = dict(grad_clip=dict(max_norm=10, norm_type=2))
+
+# # learning policy
+# lr_config = dict(policy='step', step=10)
+# total_epochs = 30 # Train for more to see if it converges (Originally, this was 20e)
+
+# # """v7"""
+# optimizer = dict(type='Adam', lr=1e-6, weight_decay=0.00001)
+# optimizer_config = dict(grad_clip=dict(max_norm=10, norm_type=2))
+
+# # learning policy
+# lr_config = None
+# total_epochs = 50 # Train for more to see if it converges (Originally, this was 20e)
+
+# """v8"""
 optimizer = dict(type='Adam', lr=1e-6, weight_decay=0.00001)
 optimizer_config = dict(grad_clip=dict(max_norm=10, norm_type=2))
 
 # learning policy
-lr_config = dict(policy='step', step=10)
-total_epochs = 30 # Train for more to see if it converges (Originally, this was 20e)
+lr_config = dict(policy='CosineAnnealing', min_lr=0)
+total_epochs = 50 # Train for more to see if it converges (Originally, this was 20e)
 
 work_dir = './work_dirs/v3-5-scrambmix/'
 find_unused_parameters = True

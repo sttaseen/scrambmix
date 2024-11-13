@@ -32,7 +32,7 @@ log_config = dict(interval=10,
                         init_kwargs={
                          'entity': "cares",
                          'project': "hmdb51-tuning",
-                         'group': 'baseline'
+                         'group': 'baseline-adam'
                         },
                         log_artifact=True)
 ])
@@ -183,17 +183,30 @@ data = dict(
             dict(type='ToTensor', keys=['imgs'])
         ]))
 evaluation = dict(
-    interval=5, metrics=['top_k_accuracy', 'mean_class_accuracy', 'mean_average_precision'])
-optimizer = dict(type='SGD', lr=0.00042, momentum=0.9, weight_decay=0.0001)
-optimizer_config = dict(grad_clip=dict(max_norm=10, norm_type=2))
-lr_config = dict(
-    policy='step',
-    step=[70, 140],
-    warmup='linear',
-    warmup_ratio=0.2,
-    warmup_by_epoch=True,
-    warmup_iters=16)
-total_epochs =150
+    interval=5, metrics=['top_k_accuracy', 'mean_class_accuracy'])
+    
+# optimizer = dict(type='SGD', lr=0.00042, momentum=0.9, weight_decay=0.0001)
+# optimizer_config = dict(grad_clip=dict(max_norm=10, norm_type=2))
+
+# lr_config = dict(
+#     policy='step',
+#     step=[150],
+#     warmup='linear',
+#     warmup_ratio=0.2,
+#     warmup_by_epoch=True,
+#     warmup_iters=16)
+
+# optimizer
+optimizer = dict(
+    type='Adam', lr=0.01, weight_decay=0.00001)  # this lr is used for 1 gpus
+optimizer_config = dict(grad_clip=None)
+
+# learning policy
+lr_config = dict(policy='step', step=10)
+total_epochs = 20
+
+# total_epochs = 50
+
 work_dir = './work_dirs/v3-5-scrambmix/'
 find_unused_parameters = True
 omnisource = False

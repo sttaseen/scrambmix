@@ -187,7 +187,7 @@ optimizer = dict(type='Adam', lr=7.886714129990479e-06, weight_decay=0.00001)
 optimizer_config = dict(grad_clip=dict(max_norm=41, norm_type=2))
 lr_config = None
 total_epochs = 60
-work_dir = './work_dirs/floatframecutmix/'
+work_dir = './work_dirs/floatframecutmix-1/'
 find_unused_parameters = True
 omnisource = False
 module_hooks = []

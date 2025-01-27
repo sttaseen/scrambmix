@@ -1,0 +1,2 @@
+2024-12-12 13:07:28,317 - INFO - load model from: https://download.openmmlab.com/mmaction/recognition/csn/ircsn_from_scratch_r50_ig65m_20210617-ce545a37.pth
+2024-12-12 13:07:28,317 - INFO - load checkpoint from http path: https://download.openmmlab.com/mmaction/recognition/csn/ircsn_from_scratch_r50_ig65m_20210617-ce545a37.pth

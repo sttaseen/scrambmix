@@ -1,0 +1,3 @@
+2024-11-15 13:30:34,576 - INFO - load model from: https://download.openmmlab.com/mmaction/recognition/csn/ircsn_from_scratch_r50_ig65m_20210617-ce545a37.pth
+2024-11-15 13:30:34,576 - INFO - load checkpoint from http path: https://download.openmmlab.com/mmaction/recognition/csn/ircsn_from_scratch_r50_ig65m_20210617-ce545a37.pth
+2024-11-15 13:32:46,096 - INFO - Epoch [1/60], Train Loss: 0.1925

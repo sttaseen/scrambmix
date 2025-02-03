@@ -17,14 +17,14 @@ model = dict(
         spatial_type='avg',
         dropout_ratio=0.68,
         init_std=0.01),
-    train_cfg=dict(blending=dict(type='FloatFrameCutmix', num_classes=52, num_frames=32, alpha=3.808)),
+    # train_cfg=dict(blending=dict(type='Scrambmix', num_classes=52, num_frames=32, alpha=7.347)),
     test_cfg=dict(average_clips='prob', max_testing_views=10))
 
 # This schedule is specifically for training on 8 GPUs with 1 images per GPU
 checkpoint_config = dict(interval=5)
 
 # Set up fold number
-fold = 3
+fold = 2
 
 # Setup WandB
 log_config = dict(interval=10,
@@ -34,8 +34,8 @@ log_config = dict(interval=10,
                         init_kwargs={
                          'entity': "cares",
                          'project': "hmdb51-cv",
-                         'group': f'fframecutmix-fold{fold}',
-                         'name': f'fframecutmix-fold-{fold}'
+                         'group': f'baseline-fold{fold}',
+                         'name': f'baseline-fold-{fold}'
                         },
                         log_artifact=True)
 ])
@@ -191,7 +191,7 @@ optimizer = dict(type='Adam', lr=7.886714129990479e-06, weight_decay=0.00001)
 optimizer_config = dict(grad_clip=dict(max_norm=41, norm_type=2))
 lr_config = None
 total_epochs = 60
-work_dir = f'./work_dirs/floatframecutmix-{fold}/'
+work_dir = f'./work_dirs/baseline-{fold}/'
 find_unused_parameters = True
 omnisource = False
 module_hooks = []

@@ -7,3 +7,4 @@ build_report.txt
 setup/wlasl/eda/.ipynb_checkpoints
 setup/autsl/eda/.ipynb_checkpoints
 *.pth
+*.jpg
